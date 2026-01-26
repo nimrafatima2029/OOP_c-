@@ -17,8 +17,12 @@ void changeDept(string newDept){
 
 int main(){
     teacher t1; //object
-    t1.name = "Nimra Fatima";
+    t1.name = "Nimra Fatima";//dot operator used to access the properties for the object
+    t1.dept = "computer science";
+    t1.changeDept("artificial intelligence") ;
+
     cout << t1.name<<endl;
+    cout << t1.dept<< endl;
 
     return 0;
 
