@@ -20,5 +20,7 @@ class student {
 int main(){
     student s1;
     s1.display();
+
+        cout<<"hello it is a test "
     return 0;
 }
