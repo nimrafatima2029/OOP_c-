@@ -29,25 +29,36 @@ using namespace std;
  
 // Base exception class
 class PharmacyException {
+        // Stores the error message associated with the exception
     string message;
 public:
+    // Constructor of PharmacyException
+    // Receives an error message and stores it in 'message'
     PharmacyException(string msg) {
         message = msg;
     }
+    // Getter function
+    // Returns the stored error message
     string getMessage() {
         return message;
     }
 };
  
 // Child exception: when quantity is 0 or negative
+
 class InvalidQuantityException : public PharmacyException {
 public:
+    // Constructor of InvalidQuantityException
+    // Calls the parent class constructor and sends
+    // a predefined error message
     InvalidQuantityException() : PharmacyException("Error: Quantity must be greater than zero!") {}
 };
  
 // Child exception: when price is 0 or negative
 class InvalidPriceException : public PharmacyException {
 public:
+    // Constructor of InvalidPriceException
+    // Calls parent constructor with a predefined message
     InvalidPriceException() : PharmacyException("Error: Price must be greater than zero!") {}
 };
  
@@ -56,15 +67,22 @@ public:
 //   STEP 2: ABSTRACT CLASS  -->  Abstraction
 // ===========================================================
  
+// Product is the base class of all products
+// It is also an abstract class because it contains pure virtual functions
 class Product {
 // protected means child classes can access these
 protected:
+ // Stores product name
     string name;
+     // Stores price per unit
     double price;
+     // Stores quantity of hte product
     int    quantity;
  
 public:
     // --- Default Constructor ---
+        // Runs when an object is created without arguments
+
     Product() {
         name     = "Unknown";
         price    = 0.0;
@@ -72,159 +90,198 @@ public:
     }
  
     // --- Parameterized Constructor ---
+    // Runs when values are provided during object creation
     Product(string n, double p, int q) {
+                // Initialize name with n
+
         name     = n;
+                // Initialize price with p
+
         price    = p;
+                // Initialize quantity with q
+
         quantity = q;
     }
  
     // --- Copy Constructor ---
+    // Creates a new object by copying another Product object
     Product(const Product& other) {
+                // Copy name from existing object
+
         name     = other.name;
+                // Copy price from existing object
+
         price    = other.price;
+                // Copy quantity from existing object
+
         quantity = other.quantity;
     }
  
     // --- Getters (Encapsulation) ---
-    string getName()     { return name;     }
-    double getPrice()    { return price;    }
-    int    getQuantity() { return quantity; }
+    
+    string getName()     { return name;     }// Returns product name
+    double getPrice()    { return price;    }// Returns product price
+    int    getQuantity() { return quantity; }// Returns product quantity
  
     // --- Setters with validation (Encapsulation) ---
-    void setPrice(double p) {
-        if (p <= 0) throw InvalidPriceException();
+    void setPrice(double p) {// Sets a new price
+        if (p <= 0) // Check if price is invalid
+        throw InvalidPriceException();// Throw custom exception
         price = p;
     }
-    void setQuantity(int q) {
-        if (q <= 0) throw InvalidQuantityException();
-        quantity = q;
+    void setQuantity(int q) {// Sets a new quantity
+        if (q <= 0) // Check if quantity is invalid
+        throw InvalidQuantityException();// Throw custom exception
+        quantity = q;// Store valid quantity
     }
  
     // --- Pure Virtual Functions --> makes Product ABSTRACT ---
     // Every child MUST define these
+
+    // Every child class MUST provide its own
+    // implementation of calculateCost()
     virtual double calculateCost() = 0;
-    virtual void   displayItem()   = 0;
-    virtual string getCategory()   = 0;
+    virtual void   displayItem()   = 0;// Every child class MUST provide its own
+    // implementation of displayItem()
+    virtual string getCategory()   = 0;// Every child class MUST provide its own
+    // implementation of getCategory()
  
-    // Virtual destructor (good practice)
-    virtual ~Product() {}
+    // Virtual destructor
+    virtual ~Product() {} // Ensures proper destruction when deleting
+    // derived objects through Product pointers
 };
 
  
 // ===========================================================
-//   STEP 3: DERIVED CLASS 1 - Medicine  -->  Inheritance
+//   STEP 3: DERIVED CLASS 1 - Medicine  --> single Inheritance
 // ===========================================================
  
 class Medicine : public Product {
-    string medicineType;   // e.g. Tablet, Syrup, Injection
+    string medicineType; // Stores the type of medicine
+    // Examples: Tablet, Syrup, Injection
  
 public:
     // Default Constructor
+    // Calls Product's default constructor first
     Medicine() : Product() {
         medicineType = "General";
     }
  
-    // Parameterized Constructor
-    Medicine(string n, double p, int q, string type) : Product(n, p, q) {
-        medicineType = type;
+    // Parameterized Constructor // Receives medicine details from user
+    Medicine(string n, double p, int q, string type) : Product(n, p, q) {// Calls Product's parameterized constructor
+        // and initializes inherited data members
+        medicineType = type;// Initialize medicine type
     }
  
     // --- Function Overriding + Runtime Polymorphism ---
+    // Overrides Product's pure virtual function
     double calculateCost() override {
+         // Total cost = price × quantity
         return price * quantity;
     }
  
-    void displayItem() override {
-        cout << "  [Medicine]  " << name
-             << "  | Type: "     << medicineType
-             << "  | Price: Rs." << price
-             << "  | Qty: "      << quantity
-             << "  | Total: Rs." << calculateCost()
+    void displayItem() override {// Overrides Product's pure virtual function
+        cout << "  [Medicine]  " << name// Display medicine information
+             << "  | Type: "     << medicineType// Show medicine type
+             << "  | Price: Rs." << price// Show price per unit
+             << "  | Qty: "      << quantity// Show quantity
+             << "  | Total: Rs." << calculateCost()// Show total cost
              << endl;
     }
  
-    string getCategory() override {
-        return "Medicine (" + medicineType + ")";
+    string getCategory() override {// Overrides Product's pure virtual function
+        return "Medicine (" + medicineType + ")";// Return category name
     }
- 
+ // Getter function
+    // Returns medicine type
     string getMedicineType() { return medicineType; }
 };
  
  
 // ===========================================================
-//   STEP 4: DERIVED CLASS 2 - Supplement  -->  Inheritance
+//   STEP 4: DERIVED CLASS 2 - Supplement  --> single Inheritance
 // ===========================================================
  
 class Supplement : public Product {
-    double discountPercent;
+    double discountPercent;// Stores discount percentage for the supplement
+
  
 public:
     // Default Constructor
-    Supplement() : Product() {
-        discountPercent = 0.0;
+    Supplement() : Product() {// Calls Product's default constructor first
+        discountPercent = 0.0;// Default discount is 0%
     }
  
     // Parameterized Constructor
     Supplement(string n, double p, int q, double disc) : Product(n, p, q) {
-        discountPercent = disc;
+        // Receives supplement details// Calls Product's parameterized constructor
+        // to initialize inherited members
+        discountPercent = disc;// Store discount percentage
+
     }
  
     // --- Function Overriding --- (different logic: applies discount)
-    double calculateCost() override {
-        double gross    = price * quantity;
-        double discount = gross * discountPercent / 100.0;
-        return gross - discount;
+    double calculateCost() override {// Overrides Product's calculateCost() function
+        double gross    = price * quantity;// Calculate original amount before discount
+        double discount = gross * discountPercent / 100.0;// Calculate discount amount
+        return gross - discount;// Return final amount after discount
     }
  
-    void displayItem() override {
-        double gross = price * quantity;
-        cout << "  [Supplement]  " << name
-             << "  | Discount: "   << discountPercent << "%"
-             << "  | Price: Rs."   << price
-             << "  | Qty: "        << quantity
-             << "  | Total: Rs."   << calculateCost()
+    void displayItem() override {// Overrides Product's displayItem() function
+        double gross = price * quantity;        // Calculate original amount before discount
+
+        cout << "  [Supplement]  " << name// Display supplement information
+             << "  | Discount: "   << discountPercent << "%"             // Display discount percentage
+
+             << "  | Price: Rs."   << price// Display price per unit
+             << "  | Qty: "        << quantity// Display quantity
+             << "  | Total: Rs."   << calculateCost()// Display final amount after discount
              << endl;
     }
  
-    string getCategory() override {
-        return "Supplement";
+    string getCategory() override {// Overrides Product's getCategory() function
+        return "Supplement";// Return category name
     }
 };
  
  
 // ===========================================================
 //   STEP 5: DERIVED CLASS 3 - TaxedMedicine
-//           Inherits Medicine  -->  Multi-level Inheritance
+//           Inherits Medicine  -->  Multi-level Inheritance // Product → Medicine → TaxedMedicine
 // ===========================================================
  
 class TaxedMedicine : public Medicine {
-    double taxPercent;
+    double taxPercent;// Stores tax percentage applied on medicine
  
 public:
-    TaxedMedicine(string n, double p, int q, string type, double tax)
-        : Medicine(n, p, q, type) {
-        taxPercent = tax;
+    TaxedMedicine(string n, double p, int q, string type, double tax)// Receives medicine details and tax rate
+        : Medicine(n, p, q, type) { // Calls Medicine constructor first
+        // Medicine constructor then calls Product constructor
+        taxPercent = tax;// Store tax percentage
+  
     }
  
     // --- Overriding again at level 3 ---
+    // Overrides calculateCost() again
+    // Different logic: adds tax instead of discount
     double calculateCost() override {
-        double base = price * quantity;
-        double tax  = base * taxPercent / 100.0;
-        return base + tax;
+        double base = price * quantity;// Calculate original medicine cost
+        double tax  = base * taxPercent / 100.0;// Calculate tax amount
+        return base + tax;// Return final cost after adding tax
     }
  
-    void displayItem() override {
-        double base = price * quantity;
-        cout << "  [Taxed Medicine]  " << name
-             << "  | Tax: "            << taxPercent << "%"
-             << "  | Price: Rs."       << price
-             << "  | Qty: "            << quantity
-             << "  | Total: Rs."       << calculateCost()
+    void displayItem() override {// Overrides displayItem()
+        double base = price * quantity;// Calculate original amount
+        cout << "  [Taxed Medicine]  " << name        // Display taxed medicine information
+             << "  | Tax: "            << taxPercent << "%"// Display tax percentage
+             << "  | Price: Rs."       << price // Display price per unit
+             << "  | Qty: "            << quantity// Display quantity
+             << "  | Total: Rs."       << calculateCost()// Display final amount after tax
              << endl;
     }
  
-    string getCategory() override {
-        return "Taxed Medicine";
+    string getCategory() override {// Overrides getCategory()
+        return "Taxed Medicine";// Return category name
     }
 };
  
@@ -235,24 +292,28 @@ public:
 // ===========================================================
  
 class Basket {
-    Product* items[50];   // array of product pointers (max 50 items)
-    int      count;
-    string   customerName;
+    Product* items[50];   // array of product pointers 
+    // Enables runtime polymorphism (base pointer → derived object)
+                                    
+    int      count;// Keeps track of number of items currently in basket
+
+    string   customerName;// Stores name of the customer
  
 public:
-    // Constructor
+    // Constructor: runs automatically when object is created
     Basket() {
-        count        = 0;
-        customerName = "Customer";
-        for (int i = 0; i < 50; i++)
-            items[i] = NULL;
+        count        = 0; // Initialize basket as empty (no items yet)
+        customerName = "Customer";// Default customer name
+        for (int i = 0; i < 50; i++)// Loop to initialize all array slots
+            items[i] = NULL;// Set all pointers to NULL (no garbage values)
     }
  
-    Basket(string name) {
-        count        = 0;
-        customerName = name;
-        for (int i = 0; i < 50; i++)
-            items[i] = NULL;
+    Basket(string name) {// Constructor with customer name parameter
+        count        = 0;// Basket starts empty
+
+        customerName = name;// Assign user-provided name
+        for (int i = 0; i < 50; i++)// Initialize all array slots
+            items[i] = NULL;// Set each pointer to NULL
     }
  
     // Add product to basket
