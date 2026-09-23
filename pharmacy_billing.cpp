@@ -1,21 +1,4 @@
-/*
- ************************************************************
- *         PHARMACY BILLING SYSTEM
- *         Semester End Project - C++
- *
- *  OOP Concepts Covered:
- *  1.  Classes & Objects
- *  2.  Encapsulation
- *  3.  Abstraction  (abstract class)
- *  4.  Inheritance  (single + multilevel)
- *  5.  Polymorphism (runtime + compile-time)
- *  6.  Constructors (default, parameterized, copy)
- *  7.  Function Overloading
- *  8.  Function Overriding
- *  9.  Exception Handling
- *  10. File Handling  (save bill to file)
- ************************************************************
-*/
+
  
 #include <iostream>
 #include <fstream>    // for file handling
